@@ -1,0 +1,14 @@
+{
+  "name": "ws-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Yang Lin",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^2.1.0"
+  },
+  "scripts": {
+    "server": "node server.js"
+  }
+}
