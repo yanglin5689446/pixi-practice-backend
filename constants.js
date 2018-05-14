@@ -9,7 +9,7 @@ const game = {
   },
 }
 
-const world = { width: 500, height: 500 }
+const world = { width: 5000, height: 5000 }
 
 module.exports = {
   game, world

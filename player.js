@@ -7,7 +7,8 @@ class Player {
     this.y = Math.random() * world.width
     this.rotation = 0
     this.score = 0
-
+    this.hp = 100
+    this.max_hp = 100
 
     this.id = id
     
@@ -23,7 +24,8 @@ class Player {
       case 'eat_particle':
         if(game.objects.particles[event.payload.index]){
           game.objects.particles[event.payload.index] = null
-          this.score += 1          
+          this.score += 1
+          this.hp --
         }
         break
     }
