@@ -3,9 +3,9 @@ const { updates, game, world } = require('./constants')
 
 class Player {
   constructor(id, nickname){
-    this.x = Math.random() * world.height
-    this.y = Math.random() * world.width
-    this.rotation = 0
+    this.x = Math.floor(Math.random() * world.height)
+    this.y = Math.floor(Math.random() * world.width)
+    this.facing = 'down'
     this.score = 0
     this.hp = 100
     this.max_hp = 100
@@ -20,7 +20,7 @@ class Player {
       case 'update_position':
         this.x += event.payload.x
         this.y += event.payload.y
-        this.rotation = event.payload.rotation
+        this.facing = event.payload.facing
         break
       case 'eat_particle':
         if(game.objects.particles[event.payload.index]){
