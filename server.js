@@ -18,13 +18,19 @@ function initialize_game () {
 
 server.on('connection', (client) => {
   console.log(`player connected with id: ${client.id}`)
-  if(!game.players){
-    game.players = {}
-    initialize_game()
-    game.start = true
-  }
-  player = new Player(client.id)
-  game.players[client.id] = player
+
+  client.on('initialize', (data) => {
+    console.log(`player ${client.id} set nickname "${data.nickname}"`)
+    if(!game.players){
+      game.players = {}
+      initialize_game()
+      game.start = true
+    }
+    let player = new Player(client.id, data.nickname)
+    game.players[client.id] = player
+    client.on('event', player.handle_event)
+    client.emit('initialize', { player, objects: game.objects })
+  })
 
   client.on('disconnect', () => {
     console.log(`player ${client.id} disconnected`)
@@ -32,8 +38,6 @@ server.on('connection', (client) => {
     game.disconnected.push(client.id)
   })
 
-  client.on('event', player.handle_event)
-  client.emit('initialize', { player, objects: game.objects })
 })
 
 const game_loop = () => {

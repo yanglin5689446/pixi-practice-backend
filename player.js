@@ -2,7 +2,7 @@
 const { updates, game, world } = require('./constants')
 
 class Player {
-  constructor(id){
+  constructor(id, nickname){
     this.x = Math.random() * world.height
     this.y = Math.random() * world.width
     this.rotation = 0
@@ -11,6 +11,7 @@ class Player {
     this.max_hp = 100
 
     this.id = id
+    this.nickname = nickname
     
     this.handle_event = this.handle_event.bind(this)
   }
@@ -25,7 +26,6 @@ class Player {
         if(game.objects.particles[event.payload.index]){
           game.objects.particles[event.payload.index] = null
           this.score += 1
-          this.hp --
         }
         break
     }
