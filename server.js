@@ -75,7 +75,7 @@ const game_loop = () => {
     }
   }
   // update players status
-  server.local.emit('render', updates)
+  server.local.emit('update', updates)
 
   if(game.disconnected)game.disconnected = []
 
