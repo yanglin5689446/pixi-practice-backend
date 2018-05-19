@@ -38,6 +38,10 @@ server.on('connection', (client) => {
     game.disconnected.push(client.id)
   })
 
+  client.on('interact', (data) => {
+    game.objects.towers.fox.main.hp -= 5
+  })
+
 })
 
 const game_loop = () => {
@@ -71,7 +75,8 @@ const game_loop = () => {
       particles: {
         news: new_particles,
         removals: removal_particles
-      }
+      },
+      towers: game.objects.towers
     }
   }
   // update players status
