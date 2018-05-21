@@ -88,4 +88,4 @@ const game_loop = () => {
 }
 
 // 60fps
-setInterval(game_loop, 1000 / 60)
+setInterval(game_loop, 1000 / 16)
