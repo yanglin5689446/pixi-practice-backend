@@ -2,7 +2,7 @@
 const { updates, game, world } = require('./constants')
 
 class Player {
-  constructor(id, nickname){
+  constructor(id, nickname, team){
     this.x = 100 || Math.floor(Math.random() * world.width)
     this.y = 100 || Math.floor(Math.random() * world.height)
     this.facing = 'down'
@@ -13,6 +13,7 @@ class Player {
 
     this.id = id
     this.nickname = nickname
+    this.team = team
     
     this.handle_event = this.handle_event.bind(this)
   }

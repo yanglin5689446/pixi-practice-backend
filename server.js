@@ -26,7 +26,7 @@ server.on('connection', (client) => {
       initialize_game()
       game.start = true
     }
-    let player = new Player(client.id, data.nickname)
+    let player = new Player(client.id, data.nickname, data.team)
     game.players[client.id] = player
     client.on('event', player.handle_event)
     client.emit('initialize', { player, objects: game.objects })
@@ -87,5 +87,5 @@ const game_loop = () => {
   game.tick ++
 }
 
-// 60fps
-setInterval(game_loop, 1000 / 16)
+// 1 tick = 1/20 second
+setInterval(game_loop, 1000 / 50)
