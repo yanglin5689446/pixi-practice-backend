@@ -1,5 +1,5 @@
 
-const { updates, game, world } = require('./constants')
+const { world_size } = require('./constants')
 
 class Player {
   constructor(id, nickname, team){
@@ -15,24 +15,14 @@ class Player {
     this.nickname = nickname
     this.team = team
     
-    this.handle_event = this.handle_event.bind(this)
+    this.movement = this.movement.bind(this)
   }
-  handle_event(event){
-    switch(event.type){
-      case 'update_position':
-        this.x = event.payload.x
-        this.y = event.payload.y
-        this.facing = event.payload.facing
-        this.speed = event.payload.speed
-        this.moved = event.payload.moved
-        break
-      case 'eat_particle':
-        if(game.objects.particles[event.payload.index]){
-          game.objects.particles[event.payload.index] = null
-          this.score += 1
-        }
-        break
-    }
+  movement(update){
+    this.x = update.x
+    this.y = update.y
+    this.facing = update.facing
+    this.speed = update.speed
+    this.moved = update.moved
   }
 }
 
