@@ -1,10 +1,9 @@
 
 const { world_size } = require('./constants')
+const game = require('./game')
 
 class Player {
   constructor(id, nickname, team){
-    this.x = 100 || Math.floor(Math.random() * world.width)
-    this.y = 100 || Math.floor(Math.random() * world.height)
     this.facing = 'down'
     this.score = 0
     this.hp = 100
@@ -14,6 +13,21 @@ class Player {
     this.id = id
     this.nickname = nickname
     this.team = team
+    const game = require('./game')
+    switch(team){
+        case 1:
+            this.x = game.state.objects.towers.fox[0].x
+            this.y = game.state.objects.towers.fox[0].y + 10
+            break
+        case 2:
+            this.x = game.state.objects.towers.panda[0].x
+            this.y = game.state.objects.towers.panda[0].y + 10
+            break
+        default:
+            this.x = -1000
+            this.y = -1000
+    }
+
     
     this.movement = this.movement.bind(this)
   }

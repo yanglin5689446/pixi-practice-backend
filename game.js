@@ -9,29 +9,28 @@ class Game {
     this.started = this.started.bind(this)
     this.add_player = this.add_player.bind(this)
     this.handle_event = this.handle_event.bind(this)
-
   }
   started(){
     return this._start
   }
   start(){
     this._start = true
+    const tower_margin = 300
     this.state = {  
       players: {},
       disconnected: [],
       objects: {
         towers: {
-          fox: {
-            main: { hp: 10000, max_hp: 10000 },
-            top: { hp: 10000, max_hp: 10000 },
-            bottom: { hp: 10000, max_hp: 10000 }
-          },
-          panda: {
-            main: { hp: 10000, max_hp: 10000 },
-            top: { hp: 10000, max_hp: 10000 },
-            bottom: { hp: 10000, max_hp: 10000 }
-
-          },
+          fox: [
+            { x: tower_margin, y: world_size.height/2, max_hp: 10000, hp: 10000, tier: 1}, 
+            { x: tower_margin, y: world_size.height/4, max_hp: 10000, hp: 10000, tier: 2}, 
+            { x: tower_margin, y: world_size.height*3/4, max_hp: 10000, hp: 10000, tier: 2}, 
+          ],
+          panda: [
+            { x: world_size.width - tower_margin, y: world_size.height/2, max_hp: 10000, hp: 10000, tier: 1}, 
+            { x: world_size.width - tower_margin, y: world_size.height/4, max_hp: 10000, hp: 10000, tier: 2}, 
+            { x: world_size.width - tower_margin, y: world_size.height*3/4, max_hp: 10000, hp: 10000, tier: 2},
+          ],
         }
       }
     }
@@ -51,8 +50,13 @@ class Game {
       case 'player_movement':
         this.state.players[event.payload.id].movement(event.payload)
         break
+      case 'attack':
+        this.state.players[event.payload.attacker]
+        break
     }
   }
 }
 
-module.exports = Game
+let game = new Game()
+
+module.exports = game
