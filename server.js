@@ -24,8 +24,11 @@ server.on('connection', (client) => {
 
   client.on('disconnect', () => {
     console.log(`player ${client.id} disconnected`)
-    delete game.state.players[client.id]
-    game.updates.disconnected.push(client.id)
+    if(game.state.players[client.id]){
+      delete game.state.players[client.id]
+      game.updates.disconnected.push(client.id)      
+    }
+
   })
 })
 
@@ -34,7 +37,8 @@ const game_loop = () => {
 
   // update players status
   server.local.emit('update', game.updates)
-  if(game.state.disconnected)game.state.disconnected = []
+  if(game.updates.disconnected)game.updates.disconnected = []
+  if(game.updates.attacks)game.updates.attacks = []    
 
 }
 
