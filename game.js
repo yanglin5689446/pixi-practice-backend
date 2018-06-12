@@ -1,5 +1,7 @@
 
 const Player = require('./player')
+const Tower = require('./tower')
+
 const { world_size } = require('./constants')
 
 function attack(attack){
@@ -18,6 +20,8 @@ function attack(attack){
       break
   }
   target.hp -= attacker.attack_damage
+  if(target.hp <= 0) target.die()
+
   game.updates.attacks.push(attack)
 }
 
@@ -39,12 +43,12 @@ class Game {
       disconnected: [],
       objects: {
         towers: [
-          { x: tower_margin, y: world_size.height/2, max_hp: 10000, hp: 10000, tier: 1, team: 1 }, 
-          { x: tower_margin, y: world_size.height/4, max_hp: 5000, hp: 5000, tier: 2, team: 1 }, 
-          { x: tower_margin, y: world_size.height*3/4, max_hp: 5000, hp: 5000, tier: 2, team: 1 }, 
-          { x: world_size.width - tower_margin, y: world_size.height/2, max_hp: 10000, hp: 10000, tier: 1, team: 2 }, 
-          { x: world_size.width - tower_margin, y: world_size.height/4, max_hp: 5000, hp: 5000, tier: 2, team: 2 }, 
-          { x: world_size.width - tower_margin, y: world_size.height*3/4, max_hp: 5000, hp: 5000, tier: 2, team: 2 },
+          new Tower(tower_margin, world_size.height/2, 1, 1),
+          new Tower(tower_margin, world_size.height/4, 2, 1),
+          new Tower(tower_margin, world_size.height*3/4, 2, 1),
+          new Tower(world_size.width - tower_margin, world_size.height/2, 1, 2),
+          new Tower(world_size.width - tower_margin, world_size.height/4, 2, 2),
+          new Tower(world_size.width - tower_margin, world_size.height*3/4, 2, 2),
         ]
       }
     }
