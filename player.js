@@ -19,11 +19,17 @@ class Player {
     this.revive()
   }
   movement(update){
-    this.x = update.x
-    this.y = update.y
+    if(this.dead)return;
+
     this.facing = update.facing
     this.speed = update.speed
     this.moved = update.moved
+
+    if(this.facing === 'up')this.y -= update.speed
+    else if(this.facing === 'down')this.y += update.speed
+    else if(this.facing === 'left')this.x -= update.speed
+    else if(this.facing === 'right')this.x += update.speed
+
   }
   revive(){
     this.dead = false
