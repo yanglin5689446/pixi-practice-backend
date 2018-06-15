@@ -17,10 +17,14 @@ class Tower {
     this.y = y
     this.team = team
     this.die = this.die.bind(this)
+    this.to_exp = this.to_exp.bind(this)
   }
   die(){
-    this.die = true
+    this.dead = true
     this.hp = 0
+  }
+  to_exp(){
+    return 5000 / this.tier
   }
 }
 

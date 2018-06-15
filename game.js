@@ -20,7 +20,11 @@ function attack(attack){
       break
   }
   target.hp -= attacker.attack_damage
-  if(target.hp <= 0) target.die()
+  if(target.hp <= 0) {
+    target.die()
+    attacker.cooldown()
+    attacker.gain_exp(target.to_exp())
+  }
 
   game.updates.attacks.push(attack)
 }
@@ -50,6 +54,12 @@ class Game {
           new Tower(world_size.width - tower_margin, world_size.height/4, 2, 2),
           new Tower(world_size.width - tower_margin, world_size.height*3/4, 2, 2),
         ]
+      },
+      items:{
+        coins: {
+          data: {},
+          removed:[]
+        }
       }
     }
     this.updates = {
@@ -58,6 +68,7 @@ class Game {
       objects: {
         towers: this.state.objects.towers
       },
+      items: this.state.items,
       attacks: []
     } 
   }
@@ -65,14 +76,26 @@ class Game {
     this.state.players[id] = new Player(id, data.nickname, data.team)
   }
   handle_event(event){
+    if(!this._start)this.stared
+    const players = this.state.players
+    const items = this.state.items
+    const objects = this.state.objects
+
     try{
       switch(event.type){
         case 'player_movement':
-          this.state.players[event.payload.id].movement(event.payload)
+          players[event.payload.id].movement(event.payload)
           break
         case 'attack':
           attack(event.payload)
           break
+        case 'pick_coin':
+          players[event.payload.id].gold += items.coins.data[event.payload.coin_id].value
+          delete items.coins.data[event.payload.coin_id]
+          items.coins.removed.push(event.payload.coin_id)
+
+          break
+
       }
     }
     catch(err){
