@@ -25,7 +25,9 @@ function setgm(player){
     cd: 1000,
     x: 0,
     y: 0,
-    ap: 100
+    ap: 100,
+    kill: 0
+
   }
 }
 
@@ -154,6 +156,9 @@ class Player {
           break
         case 'player':
           target = game.state.players[event_target.id]
+          break
+        case 'mob':
+          target = game.state.objects.mobs.data[event_target.id]
           break
     }
     if(!this.is_cooldown && this.team !== target.team && distance_between(this, target) <= this.stats.reachable_range){

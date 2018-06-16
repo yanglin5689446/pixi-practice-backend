@@ -27,22 +27,25 @@ class Game {
       disconnected: [],
       objects: {
         towers: [
-          new Tower(tower_margin,  wh / 2, 1, 1),
-          new Tower(tower_margin + r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 1),
-          new Tower(tower_margin + r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 1),
-          new Tower(tower_margin + r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 1),
-          new Tower(tower_margin + r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 1),
-          new Tower(ww - tower_margin, wh/2, 1, 2),
-          new Tower(ww - tower_margin - r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 2),
-          new Tower(ww - tower_margin - r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 2),
-          new Tower(ww - tower_margin - r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 2),
-          new Tower(ww - tower_margin - r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 2),
+          new Tower(tower_margin,  wh / 2, 1, 1, 0),
+          new Tower(tower_margin + r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 1, 1),
+          new Tower(tower_margin + r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 1, 2),
+          new Tower(tower_margin + r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 1, 3),
+          new Tower(tower_margin + r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 1, 4),
+          new Tower(ww - tower_margin, wh/2, 1, 2, 5),
+          new Tower(ww - tower_margin - r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 2, 6),
+          new Tower(ww - tower_margin - r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 2, 7),
+          new Tower(ww - tower_margin - r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 2, 8),
+          new Tower(ww - tower_margin - r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 2, 9),
         ],
         coins: {
           data: {},
           removed:[]
         },
-        
+        mobs: {
+          data: {},
+          removed: []
+        }
       },
     }
     this.updates = {
@@ -54,6 +57,14 @@ class Game {
   }
   add_player(id, data){
     this.state.players[id] = new Player(id, data.nickname, data.team)
+  }
+  update(){
+    this.state.objects.towers.forEach((tower, index) => {
+      if(!tower.stats.dead && tower.next_wave_timestamp <= Date.now())
+        tower.generate_mobs(index * 100)
+    })
+    const mobs = this.state.objects.mobs.data
+    Object.keys(mobs).forEach(key => mobs[key].action())
   }
   handle_event(event){
     if(!this._start)this.start()
@@ -69,7 +80,7 @@ class Game {
           players[event.payload.id].movement(event.payload)
           break
         case 'click':
-          if(['tower', 'player'].includes(event.payload.target.type))
+          if(['tower', 'player', 'mob'].includes(event.payload.target.type))
             players[event.payload.player].attack(event.payload.target)
           if(['coin'].includes(event.payload.target.type))
             players[event.payload.player].pick(event.payload.target)

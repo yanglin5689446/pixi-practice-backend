@@ -34,15 +34,15 @@ server.on('connection', (client) => {
 
 const game_loop = () => {
   if(!game.started())return;
-
+  if(!Object.keys(game.state.players).length)return;
+  
+  game.update()
   // update players status
   server.local.emit('update', game.updates)
 
   if(game.updates.disconnected)game.updates.disconnected = []
   if(game.updates.attacks)game.updates.attacks = []
   if(game.check_over()) game.over()
-  
-
 
 }
 
