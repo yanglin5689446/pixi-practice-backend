@@ -26,7 +26,7 @@ function setgm(player){
     x: 0,
     y: 0,
     ap: 100,
-    kill: 0
+    kills: 0
 
   }
 }
@@ -151,26 +151,27 @@ class Player {
     let target 
     const game = require('./game')
     switch(event_target.type){
-        case 'tower':
-          target = game.state.objects.towers[event_target.id]
-          break
-        case 'player':
-          target = game.state.players[event_target.id]
-          break
-        case 'mob':
-          target = game.state.objects.mobs.data[event_target.id]
-          break
+      case 'tower':
+        target = game.state.objects.towers[event_target.id]
+        break
+      case 'player':
+        target = game.state.players[event_target.id]
+        break
+      case 'mob':
+        target = game.state.objects.mobs.data[event_target.id]
+        break
     }
     if(!this.is_cooldown && this.team !== target.team && distance_between(this, target) <= this.stats.reachable_range){
-        target.stats.hp -= this.stats.attack_damage
-        this.cooldown()
+      target.stats.hp -= this.stats.attack_damage
+      this.cooldown()
 
-        if(target.stats.hp <= 0) {
-            target.die()
-            this.gain_exp(target.to_exp())
-        }
+      if(target.stats.hp <= 0) {
+        this.stats.kills ++
+          target.die()
+          this.gain_exp(target.to_exp())
+      }
 
-        game.updates.attacks.push({ target: event_target, type: 'normal_attack'})
+      game.updates.attacks.push({ target: event_target, type: 'normal_attack'})
     }
   }
   pick(event_target){

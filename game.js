@@ -64,7 +64,7 @@ class Game {
         tower.generate_mobs(index * 100)
     })
     const mobs = this.state.objects.mobs.data
-    Object.keys(mobs).forEach(key => mobs[key].action())
+    Object.keys(mobs).forEach(key => mobs[key] && mobs[key].action())
   }
   handle_event(event){
     if(!this._start)this.start()

@@ -87,6 +87,9 @@ class Mob {
         case 'player':
           target = game.state.players[event_target.id]
           break
+        case 'mob':
+          target = game.state.objects.mobs.data[event_target.id]
+          break
     }
     if(!this.is_cooldown && this.team !== target.team && distance_between(this, target) <= this.stats.reachable_range  && !target.stats.dead){
         target.stats.hp -= this.stats.attack_damage
@@ -103,6 +106,7 @@ class Mob {
   action(){
     let start
     let target
+    let type
 
     switch(this.team){
       case 1:
@@ -122,8 +126,34 @@ class Mob {
         if(distance < min_distance && !tower.stats.dead){
           min_distance = distance 
           target = tower
+          type = 'tower'
         }
       })
+    const players = game.state.players
+    Object.keys(players)
+      .filter(key => players[key].team != this.team)
+      .forEach(key => {
+        let distance = distance_between(this, players[key]) 
+        if(distance < min_distance && !players[key].stats.dead){
+          min_distance = distance 
+          target = players[key]
+          type = 'player'
+        }
+      })
+    const mobs = game.state.objects.mobs.data
+
+    Object.keys(mobs)
+      .filter(key => mobs[key].team != this.team)
+      .forEach(key => {
+        let distance = distance_between(this, mobs[key]) 
+        if(distance < min_distance && !mobs[key].stats.dead){
+          min_distance = distance 
+          target = mobs[key]
+          type = 'mob'
+        }
+      })
+    if(!target) return;
+
     const error = 30
     if(min_distance > this.stats.reachable_range){
       let dx = Math.abs(target.stats.x - this.stats.x)
@@ -143,7 +173,7 @@ class Mob {
     }
     else {
       this.movement(({ facing: this.stats.facing, moved: false }))        
-      this.attack({ type: 'tower', id: target.id })
+      this.attack({ type: type, id: target.id })
     }
   }
 
