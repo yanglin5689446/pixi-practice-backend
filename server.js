@@ -37,8 +37,12 @@ const game_loop = () => {
 
   // update players status
   server.local.emit('update', game.updates)
+
   if(game.updates.disconnected)game.updates.disconnected = []
-  if(game.updates.attacks)game.updates.attacks = []    
+  if(game.updates.attacks)game.updates.attacks = []
+  if(game.check_over()) game.over()
+  
+
 
 }
 

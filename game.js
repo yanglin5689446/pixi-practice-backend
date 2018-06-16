@@ -4,30 +4,7 @@ const Tower = require('./tower')
 
 const { world_size } = require('./constants')
 
-function attack(attack){
-  let attacker = null, target = null
-  switch(attack.attacker.type){
-    case 'player':
-      attacker = game.state.players[attack.attacker.id]
-      break
-  }
-  switch(attack.target.type){
-    case 'tower':
-      target = game.state.objects.towers[attack.target.id]
-      break
-    case 'player':
-      target = game.state.players[attack.target.id]
-      break
-  }
-  target.hp -= attacker.attack_damage
-  if(target.hp <= 0) {
-    target.die()
-    attacker.cooldown()
-    attacker.gain_exp(target.to_exp())
-  }
 
-  game.updates.attacks.push(attack)
-}
 
 class Game {
   constructor(){
@@ -53,22 +30,17 @@ class Game {
           new Tower(world_size.width - tower_margin, world_size.height/2, 1, 2),
           new Tower(world_size.width - tower_margin, world_size.height/4, 2, 2),
           new Tower(world_size.width - tower_margin, world_size.height*3/4, 2, 2),
-        ]
-      },
-      items:{
+        ],
         coins: {
           data: {},
           removed:[]
         }
-      }
+      },
     }
     this.updates = {
       players: this.state.players,
       disconnected: this.state.disconnected,
-      objects: {
-        towers: this.state.objects.towers
-      },
-      items: this.state.items,
+      objects: this.state.objects,
       attacks: []
     } 
   }
@@ -76,31 +48,34 @@ class Game {
     this.state.players[id] = new Player(id, data.nickname, data.team)
   }
   handle_event(event){
-    if(!this._start)this.stared
+    if(!this._start)this.staret()
+    if(this._over)return 
+
     const players = this.state.players
-    const items = this.state.items
     const objects = this.state.objects
+    if(event.type != 'update')console.log(event.payload)
 
     try{
       switch(event.type){
-        case 'player_movement':
+        case 'update':
           players[event.payload.id].movement(event.payload)
           break
-        case 'attack':
-          attack(event.payload)
+        case 'click':
+          if(['tower', 'player'].includes(event.payload.target.type))
+            players[event.payload.player].attack(event.payload.target)
+          if(['coin'].includes(event.payload.target.type))
+            players[event.payload.player].pick(event.payload.target)
           break
-        case 'pick_coin':
-          players[event.payload.id].gold += items.coins.data[event.payload.coin_id].value
-          delete items.coins.data[event.payload.coin_id]
-          items.coins.removed.push(event.payload.coin_id)
-
-          break
-
       }
     }
     catch(err){
       console.log(err)
     }
+  }
+  check_over(){
+
+  }
+  over() {
 
   }
 }
