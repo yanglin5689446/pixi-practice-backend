@@ -3,28 +3,29 @@ const { world_size } = require('./constants')
 const { distance_between } = require('./utilities')
 
 const MAX_LEVEL = 30
+const MAX_ABILITY_LEVEL = 10
 
 function calculate_exp(level){
-    return Math.ceil(100 * Math.pow(1.4, level - 1))
+    return Math.ceil(100 * Math.pow(1.1, level - 1))
 }
 
 function setgm(player){
   player.stats = {
     facing: 'down',
     max_hp: 1000,
-    hp: 1000,
+    hp: 500,
     speed: 50,
-    attack_damage: 5000,
+    attack_damage: 50,
     reachable_range: 500,
     gold: 0,
-    level: 10,
+    level: 1,
     exp: 0,
     next_level_exp: calculate_exp(1),
     attack_available_timestamp: Date.now(),
-    cd: 200,
+    cd: 1000,
     x: 0,
     y: 0,
-    ap: 0
+    ap: 100
   }
 }
 
@@ -35,19 +36,19 @@ class Player {
       max_hp: 100,
       hp: 100,
       speed: 5,
-      attack_damage: 5,
-      reachable_range: 200,
+      attack_damage: 10,
+      reachable_range: 250,
       gold: 0,
       level: 1,
       exp: 0,
       next_level_exp: calculate_exp(1),
       attack_available_timestamp: Date.now(),
-      cd: 200,
+      cd: 1000,
       x: 0,
       y: 0,
-      ap: 0
+      ap: 0,
     }
-
+    this.abilities = Array(5).fill(1)
     this.id = id
     this.nickname = nickname
     this.team = team
@@ -63,6 +64,8 @@ class Player {
     this.attack = this.attack.bind(this)
     this.pick = this.pick.bind(this)
     this.drop_coins = this.drop_coins.bind(this)
+    this.enhance = this.enhance.bind(this)
+    this._enhance = this._enhance.bind(this)
 
     this.revive()
   }
@@ -134,8 +137,8 @@ class Player {
             this.stats.y = game.state.objects.towers[0].stats.y + (2 * Math.random() - 1) * displacement
             break
         case 2:
-            this.stats.x = game.state.objects.towers[3].stats.x + (2 * Math.random() - 1) * displacement
-            this.stats.y = game.state.objects.towers[3].stats.y + (2 * Math.random() - 1) * displacement
+            this.stats.x = game.state.objects.towers[5].stats.x + (2 * Math.random() - 1) * displacement
+            this.stats.y = game.state.objects.towers[5].stats.y + (2 * Math.random() - 1) * displacement
             break
         default:
             this.stats.x = -1000
@@ -172,6 +175,35 @@ class Player {
     delete coins.data[event_target.id]
     coins.removed.push(event_target.id)
   }
+  _enhance(id){
+    switch(id){
+      case 0:
+        this.stats.attack_damage += 5
+        break
+      case 1:
+        this.stats.speed += 2
+        break
+      case 2:
+        this.stats.max_hp += 10
+        this.stats.hp += 20
+        if(this.stats.hp > this.stats.max_hp)this.stats.hp = this.stats.max_hp
+        break
+      case 3:
+        this.stats.cd -= 60
+        break
+      case 4:
+        this.stats.reachable_range += 25
+        break
+    }
+  }
+  enhance(event_target){
+    if(this.stats.ap && this.abilities[event_target.id] < MAX_ABILITY_LEVEL){
+      this.stats.ap --
+      this.abilities[event_target.id] ++
+      this._enhance(event_target.id)
+    }
+  }
+
   die(){
     this.stats.dead = true
     this.stats.hp = 0

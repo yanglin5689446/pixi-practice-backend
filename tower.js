@@ -19,7 +19,7 @@ class Tower {
         break
     }
     this.stats.hp = this.stats.max_hp
-    
+
     this.team = team
     this.die = this.die.bind(this)
     this.to_exp = this.to_exp.bind(this)
@@ -29,7 +29,7 @@ class Tower {
     const coins = require('./game').state.objects.coins
     const n = Math.floor(Math.random() * 10) + 10
     const displacement = 200
-    const reward = 5000 / this.tier
+    const reward = 2000 / this.tier
     for(let i = 0 ;i < n ;i ++)
         coins.data[Date.now() + i] = { 
             x: this.stats.x + (2 * Math.random() - 1) * displacement, 
@@ -41,7 +41,6 @@ class Tower {
     this.stats.dead = true
     this.stats.hp = 0
     this.drop_coins()
-
   }
   to_exp(){
     return 5000 / this.tier

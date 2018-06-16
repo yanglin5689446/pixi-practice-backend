@@ -19,22 +19,30 @@ class Game {
   start(){
     this._start = true
     const tower_margin = 300
+    const r = 1000
+    const ww = world_size.width, wh = world_size.height
+
     this.state = {  
       players: {},
       disconnected: [],
       objects: {
         towers: [
-          new Tower(tower_margin, world_size.height/2, 1, 1),
-          new Tower(tower_margin, world_size.height/4, 2, 1),
-          new Tower(tower_margin, world_size.height*3/4, 2, 1),
-          new Tower(world_size.width - tower_margin, world_size.height/2, 1, 2),
-          new Tower(world_size.width - tower_margin, world_size.height/4, 2, 2),
-          new Tower(world_size.width - tower_margin, world_size.height*3/4, 2, 2),
+          new Tower(tower_margin,  wh / 2, 1, 1),
+          new Tower(tower_margin + r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 1),
+          new Tower(tower_margin + r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 1),
+          new Tower(tower_margin + r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 1),
+          new Tower(tower_margin + r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 1),
+          new Tower(ww - tower_margin, wh/2, 1, 2),
+          new Tower(ww - tower_margin - r * Math.cos(30), r * Math.sin(30) + wh/2, 2, 2),
+          new Tower(ww - tower_margin - r * Math.cos(120), r * Math.sin(120) + wh/2, 2, 2),
+          new Tower(ww - tower_margin - r * Math.cos(-120), r * Math.sin(-120) + wh/2, 2, 2),
+          new Tower(ww - tower_margin - r * Math.cos(-30), r * Math.sin(-30) + wh/2, 2, 2),
         ],
         coins: {
           data: {},
           removed:[]
-        }
+        },
+        
       },
     }
     this.updates = {
@@ -48,7 +56,7 @@ class Game {
     this.state.players[id] = new Player(id, data.nickname, data.team)
   }
   handle_event(event){
-    if(!this._start)this.staret()
+    if(!this._start)this.start()
     if(this._over)return 
 
     const players = this.state.players
@@ -65,6 +73,8 @@ class Game {
             players[event.payload.player].attack(event.payload.target)
           if(['coin'].includes(event.payload.target.type))
             players[event.payload.player].pick(event.payload.target)
+          if(['abilities'].includes(event.payload.target.type))
+            players[event.payload.player].enhance(event.payload.target)
           break
       }
     }
