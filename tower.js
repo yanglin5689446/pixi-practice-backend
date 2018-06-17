@@ -42,8 +42,13 @@ class Tower {
         amount = 2
         break
     }
-    let game = require('./game')
-    let current_time = Date.now()
+    const game = require('./game')
+    const keys = Object.keys(game.state.players)
+    let another_team = (this.team === 1 ? 2 : 1)
+    const another_team_count = keys.filter(key => game.state.players[key].team == another_team)
+    amount *= Math.ceil(another_team_count / 3) + 1
+
+    const current_time = Date.now()
     const distance = 300
     for(let i = 0 ;i < amount; i ++){
       const hash_id = current_time + i + shift
