@@ -16,7 +16,7 @@ class Tower {
     switch(tier){
       case 1:
         this.stats.max_hp = 10000
-        this.wave_interval = 90000
+        this.wave_interval = 9000
         break
       case 2:
         this.stats.max_hp = 5000
@@ -44,8 +44,7 @@ class Tower {
     }
     const game = require('./game')
     const keys = Object.keys(game.state.players)
-    let another_team = (this.team === 1 ? 2 : 1)
-    const another_team_count = keys.filter(key => game.state.players[key].team == another_team)
+    const another_team_count = keys.filter(key => game.state.players[key].team !== this.team).length
     amount *= Math.ceil(another_team_count / 3) + 1
 
     const current_time = Date.now()
