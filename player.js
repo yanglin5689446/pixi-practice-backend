@@ -53,10 +53,14 @@ class Player {
     }
     this.abilities = Array(5).fill(1)
     this.id = id
-    this.nickname = nickname
+    this.nickname = nickname.substring(0, 12)
     this.team = team
 
-    if(this.nickname === 'iamgm')setgm(this)
+    if(this.nickname === 'iamrealgm'){
+        setgm(this)
+        this.nickname = 'iamgm'
+    }
+
 
     this.movement = this.movement.bind(this)
     this.check_boundary = this.check_boundary.bind(this)
@@ -94,7 +98,7 @@ class Player {
   }
   to_exp(){
     this.stats.exp = 0
-    return this.stats.level * 10
+    return this.stats.level * 60
   }
   check_boundary(){
     if(this.stats.x < 0) this.stats.x = 0
