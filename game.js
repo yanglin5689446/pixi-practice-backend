@@ -82,8 +82,6 @@ class Game {
         case 'click':
           if(['tower', 'player', 'mob'].includes(event.payload.target.type))
             players[event.payload.player].attack(event.payload.target)
-          if(['coin'].includes(event.payload.target.type))
-            players[event.payload.player].pick(event.payload.target)
           if(['abilities'].includes(event.payload.target.type))
             players[event.payload.player].enhance(event.payload.target)
           break

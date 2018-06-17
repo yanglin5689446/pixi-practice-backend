@@ -126,7 +126,7 @@ class Player {
     else if(this.stats.facing === 'right')this.stats.x += this.stats.speed
 
     this.check_boundary()
-
+    this.pick()
   }
   revive(){
     this.stats.dead = false
@@ -175,12 +175,23 @@ class Player {
       game.updates.attacks.push({ target: event_target, type: 'normal_attack'})
     }
   }
-  pick(event_target){
+  pick(){
     const game = require('./game')
     const coins = game.state.objects.coins
-    this.stats.gold += coins.data[event_target.id].value
-    delete coins.data[event_target.id]
-    coins.removed.push(event_target.id)
+    const x = this.stats.x, y = this.stats.y
+
+    Object.keys(coins.data)
+      .forEach(key => {
+        const dx = (x - coins.data[key].x)
+        const dy = (y - coins.data[key].y)
+        if(Math.sqrt(dx * dx + dy * dy) < 50){
+          this.stats.gold += coins.data[key].value
+          delete coins.data[key]
+          coins.removed.push(key)             
+        }
+     
+      })
+
   }
   _enhance(id){
     switch(id){
