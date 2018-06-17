@@ -16,6 +16,9 @@ class Game {
   started(){
     return this._start
   }
+  overed(){
+    return this._over
+  }
   start(){
     this._start = true
     const tower_margin = 300
@@ -91,11 +94,33 @@ class Game {
       console.log(err)
     }
   }
-  check_over(){
-
+  check_winner(){
+    const towers = this.state.objects.towers
+    let winner = { fox: true, panda: true }
+    for(let i = 0 ;i < 5 ; i ++)
+      if(!towers[i].stats.dead)winner.panda = false
+    for(let i = 5 ;i < 10; i ++)
+      if(!towers[i].stats.dead)winner.fox = false
+    return winner
   }
-  over() {
-
+  set_winner(winner) {
+    this.updates.game_over = true
+    if(winner.fox)this.updates.winner = 1
+    else if(winner.panda)this.updates.winner = 2
+    const objects = this.state.objects
+    objects.towers.forEach((tower, index) => {
+      if(!tower.stats.dead)tower.die()
+    })
+    Object.entries(objects.mobs.data)
+      .forEach(mob => {
+        mob[1].die()
+        delete objects.mobs[mob[0]]
+      })
+    this._over = true
+  }
+  cleanup(){
+    this._start = false
+    this._over = false
   }
 }
 

@@ -15,7 +15,7 @@ function setgm(player){
     max_hp: 1000,
     hp: 500,
     speed: 50,
-    attack_damage: 500,
+    attack_damage: 5000,
     reachable_range: 500,
     gold: 0,
     level: 30,
@@ -226,6 +226,7 @@ class Player {
     this.stats.dead = true
     this.stats.hp = 0
     this.drop_coins()
+    this.revive_timestamp = Date.now() + 10000
     setTimeout(this.revive, 10000)
   }
 }

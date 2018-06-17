@@ -35,14 +35,25 @@ server.on('connection', (client) => {
 const game_loop = () => {
   if(!game.started())return;
   if(!Object.keys(game.state.players).length)return;
-  
+
+  const winner = game.check_winner()
+  if(!game.overed()){
+    if(winner.fox || winner.panda){
+      game.set_winner(winner)
+      setTimeout(() => {
+        game.cleanup()
+        Object.keys(server.sockets.sockets)
+          .forEach(key =>  server.sockets.sockets[key].disconnect(true))
+      }, 10000)
+    }    
+  }
+
   game.update()
   // update players status
   server.local.emit('update', game.updates)
 
   if(game.updates.disconnected)game.updates.disconnected = []
   if(game.updates.attacks)game.updates.attacks = []
-  if(game.check_over()) game.over()
 
 }
 
