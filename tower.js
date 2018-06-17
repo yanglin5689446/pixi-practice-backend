@@ -15,11 +15,11 @@ class Tower {
 
     switch(tier){
       case 1:
-        this.stats.max_hp = 3000
+        this.stats.max_hp = 10000
         this.wave_interval = 90000
         break
       case 2:
-        this.stats.max_hp = 1000
+        this.stats.max_hp = 5000
         this.wave_interval = 60000
         break
     }

@@ -15,7 +15,7 @@ function setgm(player){
     max_hp: 1000,
     hp: 500,
     speed: 50,
-    attack_damage: 50,
+    attack_damage: 500,
     reachable_range: 500,
     gold: 0,
     level: 1,
@@ -103,7 +103,7 @@ class Player {
   }
   drop_coins(){
     const coins = require('./game').state.objects.coins
-    const n = Math.floor(Math.random() * 5) + 1
+    const n = Math.floor(Math.random() * 3) + 1
     const displacement = 100
     const reward = this.stats.level * 50
     for(let i = 0 ;i < n ;i ++)

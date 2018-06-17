@@ -8,16 +8,16 @@ class Mob {
     this.stats = {
       max_hp: 30,
       hp: 30,
-      speed: 5,
+      speed: 7,
       attack_damage: 8,
       reachable_range: 200,
       attack_available_timestamp: Date.now(),
       cd: 4000,
-      exp: 100,
+      exp: 50,
       x: x,
       y: y,
     }
-    this.nickname = 'mob'
+    this.nickname = ''
     this.team = team
     this.id = id
     this.moved = true
@@ -34,6 +34,8 @@ class Mob {
   }
   gain_exp(exp){
     this.stats.exp += exp
+    this.stats.attack += 1
+
   }
   get is_cooldown(){
     return this.stats.attack_available_timestamp >= Date.now()
@@ -52,15 +54,13 @@ class Mob {
   }
   drop_coins(){
     const coins = require('./game').state.objects.coins
-    const n = Math.floor(Math.random() * 3) + 1
     const displacement = 100
-    const reward = 50
-    for(let i = 0 ;i < n ;i ++)
-        coins.data[Date.now() + i] = { 
-            x: this.stats.x + (2 * Math.random() - 1) * displacement, 
-            y: this.stats.y + (2 * Math.random() - 1) * displacement,  
-            value: Math.floor(reward * Math.random())
-        }
+    const reward = 30
+    coins.data[Date.now()] = { 
+      x: this.stats.x + (2 * Math.random() - 1) * displacement, 
+      y: this.stats.y + (2 * Math.random() - 1) * displacement,  
+      value: Math.floor(reward * Math.random())
+    }
   }
   movement(update){
     if(this.stats.dead)return;
@@ -81,26 +81,26 @@ class Mob {
     let target 
     const game = require('./game')
     switch(event_target.type){
-        case 'tower':
-          target = game.state.objects.towers[event_target.id]
-          break
-        case 'player':
-          target = game.state.players[event_target.id]
-          break
-        case 'mob':
-          target = game.state.objects.mobs.data[event_target.id]
-          break
+      case 'tower':
+        target = game.state.objects.towers[event_target.id]
+        break
+      case 'player':
+        target = game.state.players[event_target.id]
+        break
+      case 'mob':
+        target = game.state.objects.mobs.data[event_target.id]
+        break
     }
     if(!this.is_cooldown && this.team !== target.team && distance_between(this, target) <= this.stats.reachable_range  && !target.stats.dead){
-        target.stats.hp -= this.stats.attack_damage
-        this.cooldown()
+      target.stats.hp -= this.stats.attack_damage
+      this.cooldown()
 
-        if(target.stats.hp <= 0) {
-            target.die()
-            this.gain_exp(target.to_exp())
-        }
+      if(target.stats.hp <= 0) {
+          target.die()
+          this.gain_exp(target.to_exp())
+      }
 
-        game.updates.attacks.push({ target: event_target, type: 'normal_attack'})
+      game.updates.attacks.push({ target: event_target, type: 'normal_attack'})
     }
   }
   action(){
