@@ -55,7 +55,7 @@ class Tower {
   }
   drop_coins(){
     const coins = require('./game').state.objects.coins
-    const n = Math.floor(Math.random() * 10) + 10
+    const n = Math.floor(Math.random() * 5) + 5
     const displacement = 200
     const reward = 2000 / this.tier
     for(let i = 0 ;i < n ;i ++)

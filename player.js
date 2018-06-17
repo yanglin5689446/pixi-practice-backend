@@ -18,14 +18,14 @@ function setgm(player){
     attack_damage: 500,
     reachable_range: 500,
     gold: 0,
-    level: 1,
+    level: 30,
     exp: 0,
     next_level_exp: calculate_exp(1),
     attack_available_timestamp: Date.now(),
-    cd: 1000,
+    cd: 500,
     x: 0,
     y: 0,
-    ap: 100,
+    ap: 45,
     kills: 0
 
   }
@@ -37,7 +37,7 @@ class Player {
       facing: 'down',
       max_hp: 100,
       hp: 100,
-      speed: 5,
+      speed: 8,
       attack_damage: 10,
       reachable_range: 250,
       gold: 0,
@@ -49,6 +49,7 @@ class Player {
       x: 0,
       y: 0,
       ap: 0,
+      kills: 0
     }
     this.abilities = Array(5).fill(1)
     this.id = id
