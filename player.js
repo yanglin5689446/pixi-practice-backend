@@ -130,6 +130,8 @@ class Player {
     if(current_time >= this.regenerate_timestamp){
       this.regenerate_timestamp += this.stats.regenerate_interval
       this.stats.hp += this.stats.regenerate_amount
+      if(this.stats.hp > this.stats.max_hp)this.stats.hp = this.stats.max_hp
+
     }
 
     this.stats.facing = update.facing
