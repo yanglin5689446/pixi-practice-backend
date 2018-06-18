@@ -35,8 +35,8 @@ class Player {
   constructor(id, nickname, team){
     this.stats = {
       facing: 'down',
-      max_hp: 100,
-      hp: 100,
+      max_hp: 200,
+      hp: 200,
       speed: 8,
       attack_damage: 10,
       reachable_range: 250,
@@ -203,11 +203,11 @@ class Player {
         this.stats.attack_damage += 5
         break
       case 1:
-        this.stats.speed += 2
+        this.stats.speed += 1 
         break
       case 2:
-        this.stats.max_hp += 10
-        this.stats.hp += 20
+        this.stats.max_hp += 40
+        this.stats.hp += 80
         if(this.stats.hp > this.stats.max_hp)this.stats.hp = this.stats.max_hp
         break
       case 3:
