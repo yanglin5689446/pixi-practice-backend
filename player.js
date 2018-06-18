@@ -12,8 +12,8 @@ function calculate_exp(level){
 function setgm(player){
   player.stats = {
     facing: 'down',
-    max_hp: 1000,
-    hp: 500,
+    max_hp: 10000,
+    hp: 1000,
     speed: 50,
     attack_damage: 5000,
     reachable_range: 500,
@@ -22,6 +22,8 @@ function setgm(player){
     exp: 0,
     next_level_exp: calculate_exp(1),
     attack_available_timestamp: Date.now(),
+    regenerate_interval: 10000,
+    regenerate_amount: 100,
     cd: 500,
     x: 0,
     y: 0,
@@ -35,8 +37,8 @@ class Player {
   constructor(id, nickname, team){
     this.stats = {
       facing: 'down',
-      max_hp: 200,
-      hp: 200,
+      max_hp: 100,
+      hp: 100,
       speed: 8,
       attack_damage: 10,
       reachable_range: 250,
@@ -45,7 +47,9 @@ class Player {
       exp: 0,
       next_level_exp: calculate_exp(1),
       attack_available_timestamp: Date.now(),
-      cd: 1000,
+      regenerate_interval: 15000,
+      regenerate_amount: 10,
+      cd: 800,
       x: 0,
       y: 0,
       ap: 0,
@@ -55,10 +59,12 @@ class Player {
     this.id = id
     this.nickname = nickname.substring(0, 12)
     this.team = team
+    this.regenerate_timestamp = Date.now() + 15000
+
 
     if(this.nickname === 'iamrealgm'){
         setgm(this)
-        this.nickname = 'iamgm'
+        this.nickname = `GM#${Date.now().toString().substring(0, 7)}`
     }
 
 
@@ -120,6 +126,11 @@ class Player {
   }
   movement(update){
     if(this.stats.dead)return;
+    const current_time = Date.now()
+    if(current_time >= this.regenerate_timestamp){
+      this.regenerate_timestamp += this.stats.regenerate_interval
+      this.stats.hp += this.stats.regenerate_amount
+    }
 
     this.stats.facing = update.facing
     this.moved = update.moved
@@ -203,12 +214,14 @@ class Player {
         this.stats.attack_damage += 5
         break
       case 1:
-        this.stats.speed += 1 
+        this.stats.speed += 0.5
         break
       case 2:
-        this.stats.max_hp += 40
-        this.stats.hp += 80
+        this.stats.max_hp += 10
+        this.stats.hp += 20
         if(this.stats.hp > this.stats.max_hp)this.stats.hp = this.stats.max_hp
+        this.stats.regenerate_interval -= 1000
+        this.stats.regenerate_amount += 1
         break
       case 3:
         this.stats.cd -= 60
