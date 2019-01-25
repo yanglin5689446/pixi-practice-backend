@@ -1,5 +1,5 @@
 
-const PORT = 30000
+const PORT = process.env.PORT || 30000
 
 const game = require('./game')
 let io = require('socket.io')
